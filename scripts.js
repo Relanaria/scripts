@@ -1,34 +1,42 @@
-633796(function () {
-  const flexElements = document.querySelectorAll(
+(function (keywords = []) {
+  // 1. Make parent containers flex column
+  const parents = document.querySelectorAll(
     '.ipe-EventViewDetail_BB, .ipe-EventViewDetail_MarketGrid, .ipe-EventViewDetail_MyBetsModuleContainer'
   );
 
-  flexElements.forEach(el => {
-    el.style.display = 'flex';
-    el.style.flexDirection = 'column';
+  parents.forEach(parent => {
+    parent.style.display = 'flex';
+    parent.style.flexDirection = 'column';
+
+    // 2. Find all text elements inside this parent
+    const textElements = parent.querySelectorAll('.sip-MarketGroupButton_Text');
+
+    const matched = [];
+
+    // 3. Match against keywords
+    textElements.forEach(el => {
+      const text = el.textContent.toLowerCase();
+
+      if (keywords.some(k => text === k.trim().toLowerCase())) {
+        let target = el;
+
+        // go up to .gl-MarketGroupPod (4 levels in your structure)
+        for (let i = 0; i < 4; i++) {
+          if (!target.parentElement) return;
+          target = target.parentElement;
+        }
+
+        matched.push(target);
+      }
+    });
+
+    // 4. Apply ordering (bring matched items to top)
+    matched.forEach((el, index) => {
+      el.style.order = -(index + 2); // -1, -2, -3...
+    });
   });
 
-  const textElements = document.querySelectorAll('.sip-MarketGroupButton_Text');
-  let target = null;
-
-  for (const el of textElements) {
-    if (el.textContent.includes('Ace Totals')) {
-      target = el;
-
-      // go 4 levels up
-      for (let i = 0; i < 4; i++) {
-        if (!target.parentElement) {
-          target = null;
-          break;
-        }
-        target = target.parentElement;
-      }
-
-      break;
-    }
-  }
-
-  if (target) {
-    target.style.order = '-1';
-  }
-})(); 
+})([
+  "Set 1 Score",
+  "Set 1 Spread",
+]);
