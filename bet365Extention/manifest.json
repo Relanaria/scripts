@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "Custom Layout Modifier",
+  "version": "1.0",
+  "description": "Reorders elements on a page",
+
+  "permissions": ["scripting", "activeTab"],
+
+  "action": {
+    "default_popup": "popup.html"
+  },
+
+  "background": {
+    "service_worker": "background.js"
+  }
+}
